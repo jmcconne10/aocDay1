@@ -3,7 +3,6 @@ from pathlib import Path
 import sys
 
 import utils
-from utils import *  # or read_lines, parse_ints, etc.
 
 BASE_DIR = Path(__file__).parent  # Day1 folder
 
@@ -20,6 +19,3 @@ if __name__ == "__main__":
     data = utils.read_text(BASE_DIR / filename)
 
     print(data)
-
-    print("Part 1:", part1(data))
-    print("Part 2:", part2(data))

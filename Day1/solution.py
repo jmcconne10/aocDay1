@@ -13,17 +13,30 @@ def part1(data):
 def part2(data):
     return None
 
-def turnLeft(steps, currentValue):
-    newValue = currentValue - steps
-    if newValue < 0:
-        newValue = newValue % 100
-    return newValue
+def turnLeft(steps, currentValue, counter):
+    if currentValue == 0:
+        steps_to_next_click = 100
+    else:
+        steps_to_next_click = currentValue
 
-def turnRight(steps, currentValue):
-    newValue = currentValue + steps
-    if newValue > 99:
-        newValue = newValue % 100
-    return newValue
+    if steps >= steps_to_next_click:
+        counter += 1 + (steps - steps_to_next_click) //100
+
+    newValue = (currentValue - steps) % 100
+    return newValue, counter
+
+def turnRight(steps, currentValue, counter):
+    if currentValue == 0:
+        steps_to_next_click = 100
+    else:
+        steps_to_next_click = 100-currentValue
+
+    if steps >= steps_to_next_click:
+        counter += 1 + (steps - steps_to_next_click) // 100
+
+    newValue = (currentValue + steps) % 100
+
+    return newValue, counter
 
 if __name__ == "__main__":
     # Allow overriding file name from command line
@@ -38,13 +51,12 @@ if __name__ == "__main__":
         steps = int(line[1:])  # 68
         #print(f'Direction: {direction} Steps: {steps}')
         if direction == "L":
-            currentValue = turnLeft(steps,currentValue)
+            currentValue, counter = turnLeft(steps,currentValue, counter)
             print(f'Move to location: {currentValue}')
         else:
-            currentValue = turnRight(steps,currentValue)
+            currentValue, counter  = turnRight(steps,currentValue, counter)
             print(f'Move to location: {currentValue}')
-        if currentValue == 0:
-            counter+=1
+
     print(f'Counter: {counter}')
 
 
