@@ -7,28 +7,29 @@ import utils
 BASE_DIR = Path(__file__).parent  # Day1 folder
 
 def getResult(line):
+
+    batteryLength = 12
+    batteryList = [0] * batteryLength
+
     nums = []
     for ch in line:
         nums.append(int(ch))
+    stringLength = len(nums)
 
-    highFirst = nums[0]
-    firstPosition = 0
-    for i in range(1, len(nums) - 1):
-        if highFirst < nums[i]:
-            highFirst = nums[i]
-            firstPosition = i
+    nextPosition = 0
+    digitInBattery = 0
 
-    highSecond = nums[firstPosition +1]
-    secondPostion = firstPosition +1
+    for digit in batteryList:
+        digitInString = nextPosition
+        #digits left in string are > stringLength - i
+        while batteryLength - (digitInBattery +1) < stringLength - digitInString:
+            if batteryList[digitInBattery] < nums[digitInString]:
+                    batteryList[digitInBattery] = nums[digitInString]
+                    nextPosition = digitInString + 1
+            digitInString += 1
+        digitInBattery +=1
 
-    for i in range(secondPostion, len(nums)):
-        if highSecond < nums[i]:
-            highSecond = nums[i]
-            secondPostion = i
-
-    highValue = int(str(highFirst) + str(highSecond))
-
-    return highValue
+    return batteryList
 
 if __name__ == "__main__":
     # Allow overriding file name from command line
@@ -39,7 +40,8 @@ if __name__ == "__main__":
     total = 0
 
     for line in data:
-        result = getResult(line)
+        resultList = getResult(line)
+        result = int("".join(str(d) for d in resultList))
         total += result
         print(f'Result: {result}')
 
