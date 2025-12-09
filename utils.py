@@ -75,6 +75,46 @@ def read_lines(path: str | Path, keep_empty: bool = False) -> list[str]:
         lines = [line for line in lines if line]
     return lines
 
+def read_sections(path: str | Path) -> list[list[str]]:
+    """
+    Read a file and split into sections separated by blank lines.
+
+    Returns:
+        A list of sections, where each section is a list of lines (strings).
+        Blank lines are used as separators and are not included.
+
+    Example:
+        If the file contains:
+            A
+            B
+
+            C
+            D
+
+        read_sections(...) returns:
+            [["A", "B"], ["C", "D"]]
+    """
+    path = Path(path)
+    with path.open("r", encoding="utf-8") as f:
+        lines = [line.rstrip("\n") for line in f]
+
+    sections = []
+    current = []
+
+    for line in lines:
+        if line == "":
+            # end of a section
+            if current:
+                sections.append(current)
+                current = []
+        else:
+            current.append(line)
+
+    # add last section (if file doesn't end with blank line)
+    if current:
+        sections.append(current)
+
+    return sections
 
 def parse_ints(s: str) -> list[int]:
     """
