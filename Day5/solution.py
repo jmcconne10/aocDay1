@@ -7,26 +7,40 @@ import utils
 BASE_DIR = Path(__file__).parent  # Day1 folder
 
 def createRanges(data):
-
-    newList = []
+    rangeList = []
     for freshRange in data:
         parts = freshRange.split("-")
-        newList.append((int(parts[0]),int(parts[1])))
+        num0 = int(parts[0])
+        num1 = int(parts[1])
+        rangeList.append((num0,num1))
+    return rangeList
 
-    return newList
+def mergeRanges(data):
+    data.sort(key=lambda r: r[0])  # Sort by start
 
-def checkIngredients(freshRange, ingredients):
+    cleanedRanges = []
+    i = 0
+    for subRange in data:
+        if not cleanedRanges:
+            cleanedRanges.append((subRange[0], subRange[1]))
+            continue
+        else:
+            curr_start, curr_end = cleanedRanges[i]
+            if subRange[0] <= curr_end +1:
+                curr_end = max(subRange[1], curr_end)
+                cleanedRanges[i] = (curr_start, curr_end)
+            else:
+                i += 1
+                cleanedRanges.append((subRange[0], subRange[1]))
+    return cleanedRanges
 
+def sum_IDs(data):
     counter = 0
-    freshIngredients = []
-    for ID in ingredients:
-        for subRange in freshRange:
-            if int(ID) >= subRange[0] and int(ID) <=subRange[1]:
-                counter += 1
-                freshIngredients.append(ID)
-                break
+    for mergedRange in data:
+        counter += mergedRange[1] - mergedRange[0] + 1
 
-    return freshIngredients, counter
+    return counter
+
 
 if __name__ == "__main__":
     # Allow overriding file name from command line
@@ -35,10 +49,10 @@ if __name__ == "__main__":
     data = utils.read_sections(BASE_DIR / filename)
 
     freshRanges = data[0]
-    ingredientIDs = data[1]
+    rangeList = createRanges(freshRanges)
+    mergedRanges = mergeRanges(rangeList)
+    final = sum_IDs(mergedRanges)
 
-    cleanRanges = createRanges(freshRanges)
-
-    freshIngredients, counter = checkIngredients(cleanRanges, ingredientIDs)
-
-    print(counter)
+    print(rangeList)
+    print(mergedRanges)
+    print(final)
