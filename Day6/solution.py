@@ -8,28 +8,63 @@ import utils
 BASE_DIR = Path(__file__).parent  # Day1 folder
 
 def createMatrix(data):
-    columns = len(data[0].split())
     rows = len(data)
     matrix = []
     flipMatrix = []
 
-
     for line in data:
-        matrix.append(line.split())
+        newList = []
+        for ch in line:
+            newList.append(ch)
+        matrix.append(newList)
 
-    for j in range(columns):
-        list = []
-        for k in range(rows):
-            list.append(matrix[k][j])
-        flipMatrix.append(list)
+    columns = 0
+    for line in matrix:
+        if columns < len(line):
+            columns = len(line)
 
-    return flipMatrix
+    for i in range(columns):
+        columnList = []
+        for j in range(rows):
+            if i < len(matrix[j]):
+                currentChar = matrix[j][i]
+                if currentChar != "+" and currentChar != "*":
+                    columnList.append(currentChar)
+        flipMatrix.append(columnList)
 
-def doMath(matrix):
+    cleanedFlip = []
+    for line in flipMatrix:
+        s = "".join(line)
+        if s and s.isspace():
+            cleanedFlip.append("end")
+        else:
+            intS = int(s)
+            cleanedFlip.append(intS)
+    cleanedFlip.append("end")
+    finalFlip = []
+    tempFlip = []
+    k = 0
+
+    for line in cleanedFlip:
+        if line == "end":
+            finalFlip.append(tempFlip)
+            tempFlip = []
+        else:
+            tempFlip.append(line)
+    return finalFlip
+
+def findOperators(matrix):
+    lastLine = matrix[len(matrix) -1]
+    operators = lastLine.split()
+    return operators
+
+
+def doMath(matrix, operators):
     i=0
     results = []
+
     for line in matrix:
-        operator = line[len(line) - 1]
+        operator = operators[i]
         if operator == "*":
             result = 1
             for number in line:
@@ -42,6 +77,7 @@ def doMath(matrix):
                 if number != "+":
                     result += int(number)
             results.append(result)
+        i += 1
     return results
 
 if __name__ == "__main__":
@@ -51,8 +87,12 @@ if __name__ == "__main__":
     data = utils.read_lines(BASE_DIR / filename)
 
     fullArray = createMatrix(data)
+    operators = findOperators(data)
 
-    resultsList = doMath(fullArray)
+    resultsList = doMath(fullArray, operators)
+
+
+
 
     sum = 0
     for result in  resultsList:
