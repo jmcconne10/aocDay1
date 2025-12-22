@@ -303,3 +303,52 @@ def bfs(
                 queue.append(nxt)
 
     return False, parent
+
+def count_paths(grid, start):
+    """
+    grid: list[str]  (e.g., '.' open, '#' blocked)
+    start: (row, col)
+    Returns: number of unique valid paths to the bottom row.
+    Movement rules:
+      - go DOWN whenever possible
+      - if DOWN is blocked, you may go LEFT one or RIGHT one
+      - prevent revisiting cells within a single path (avoids loops)
+    """
+    R = len(grid)
+    C = len(grid[0])
+
+    def is_open(r, c):
+        # in bounds AND not blocked
+        return 0 <= r < R and 0 <= c < C and grid[r][c] != "^"
+
+    in_path = set()  # cells currently in this DFS path (for cycle prevention)
+
+    def dfs(r, c):
+        # reject invalid moves
+        if not is_open(r, c):
+            return 0
+
+        # prevent cycles within a single path
+        if (r, c) in in_path:
+            return 0
+
+        # choose: add this cell to the current path
+        in_path.add((r, c))
+
+        # success condition: reached bottom row
+        if r == R - 1:
+            in_path.remove((r, c))   # backtrack cleanup
+            return 1                 # exactly one path found
+
+        # follow movement rules
+        if is_open(r + 1, c):
+            total = dfs(r + 1, c)          # must go down if possible
+        else:
+            total = dfs(r, c - 1) + dfs(r, c + 1)  # branch left/right
+
+        # un-choose: remove this cell before returning (backtrack)
+        in_path.remove((r, c))
+        return total
+
+    return dfs(*start)
+
