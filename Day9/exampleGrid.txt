@@ -1,0 +1,26 @@
+..............
+.......#XXX!..
+.......XXXXX..
+..1OOOOOOcXX..
+..OOOOOOOOXX..
+..dOOOOOO2XX..
+.........XXX..
+.........!X#..
+..............
+
+if x1 < x2 and y1 < y2:  # X1 is top left and X2 bottom right
+    # check if coordinate C is in bounds
+    # max_x_for_y1 >= xC
+    # min_y_for_x2 <= yc
+    if max_x_for_y[y1] >= coordC[0]:
+        cGood = True
+    elif min_y_for_x[x2] <= coordC[1]:
+        cGood = True
+
+    # check if coordinate D is in bounds
+    # min_x_for_y2 <= xd
+    # max_y_for_x1 >= yd
+    if min_x_for_y[y2] <= coordD[0]:
+        dGood = True
+    elif max_y_for_x[x1] > coordD[1]:
+        dGood = True
